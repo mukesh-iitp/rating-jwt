@@ -19,7 +19,8 @@ import lombok.Setter;
 public class Rating {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//@GeneratedValue(strategy = GenerationType.IDENTITY)
+	//Auto id generation is not required as user is giving rating for a hotel
 	private Long hotelId;
 	private Long rating;
 }
