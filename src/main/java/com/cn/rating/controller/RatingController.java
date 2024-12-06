@@ -1,10 +1,21 @@
 package com.cn.rating.controller;
 
-import com.cn.rating.service.RatingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
-import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.cn.rating.dto.RatingRequest;
+import com.cn.rating.model.Rating;
+import com.cn.rating.service.RatingService;
 
 @RestController
 @RequestMapping("/rating")
@@ -18,26 +29,31 @@ public class RatingController {
     }
 
     @PostMapping(path = "/add")
-    public void addRating(@RequestBody Map<String, Long> hotelRatingMap) {
-        ratingService.addRating(hotelRatingMap);
+    @PreAuthorize("hasRole('ADMIN')")
+    public void addRating(@RequestBody RatingRequest ratingRequest) {
+        ratingService.addRating(ratingRequest);
     }
 
     @PutMapping (path = "/update")
-    public void updateRating(@RequestBody Map<String, Long> hotelRatingMap) {
-        ratingService.updateRating(hotelRatingMap);
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateRating(@RequestBody RatingRequest ratingRequest) {
+        ratingService.updateRating(ratingRequest);
     }
 
     @GetMapping(path = "/id/{id}")
-    public Long getRatingById(@PathVariable String id) {
+	@PreAuthorize("hasRole('NORMAL')")
+    public Rating getRatingById(@PathVariable Long id) {
         return ratingService.getRatingById(id);
     }
     @GetMapping(path = "getAll")
-    public Map<String, Long> getAllRating() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Rating> getAllRating() {
         return ratingService.getAllRating();
     }
     
     @DeleteMapping(path = "/id/{id}")
-    public void deleteRating(@PathVariable String id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteRating(@PathVariable Long id) {
         ratingService.deleteRating(id);
     }
 }

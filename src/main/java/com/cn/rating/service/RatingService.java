@@ -2,33 +2,42 @@ package com.cn.rating.service;
 
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.cn.rating.dto.RatingRequest;
+import com.cn.rating.model.Rating;
+import com.cn.rating.repository.RatingRepository;
+
+import java.util.List;
 
 @Service
 public class RatingService {
 
-    private final Map<String, Long> ratingMap = new HashMap<>();
+    private final RatingRepository ratingRepository;
 
-    public Long getRatingById(String id) {
+    public RatingService(RatingRepository ratingRepository) {
+		this.ratingRepository = ratingRepository;
+	}
 
-        return ratingMap.get(id);
+	public Rating getRatingById(Long id) {
+
+        return ratingRepository.findById(id).get();
     }
 
-    public void addRating(Map<String, Long> hotelRatingMap) {
-        ratingMap.putAll(hotelRatingMap);
+    public void addRating(RatingRequest ratingRequest) {
+    	Rating rating = new Rating();
+    	rating.setHotelId(ratingRequest.getHotelId());
+    	rating.setRating(ratingRequest.getRating());
+    	ratingRepository.save(rating);
     }
 
-    public Map<String, Long> getAllRating() {
-        return ratingMap;
+    public List<Rating> getAllRating() {
+        return ratingRepository.findAll();
     }
 
-    public void updateRating(Map<String, Long> hotelRatingMap) {
-        ratingMap.putAll(hotelRatingMap);
+    public void updateRating(RatingRequest ratingRequest) {
+        addRating(ratingRequest);
     }
 
-	public void deleteRating(String id) {
-		
-		ratingMap.remove(id);
+	public void deleteRating(Long id) {
+		ratingRepository.deleteById(id);
 	}
 }
